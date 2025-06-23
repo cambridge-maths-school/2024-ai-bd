@@ -1,21 +1,67 @@
-function randomMusicGenerate(htmlBar) {
-    const randomNum = 5 + Math.floor(Math.random() * 40);
-    htmlBar.style.height = `${randomNum}%`;
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    const bar1 = document.getElementById('bar1');
-    const bar2 = document.getElementById('bar2');
-    const bar3 = document.getElementById('bar3');
-    const bar4 = document.getElementById('bar4');
-    const bar5 = document.getElementById('bar5');
+    let stream = null;
+    let audioElement = null;
 
-    setInterval(() => {
-        randomMusicGenerate(bar1);
-        randomMusicGenerate(bar2);
-        randomMusicGenerate(bar3);
-        randomMusicGenerate(bar4);
-        randomMusicGenerate(bar5);
+    const detectBtn = document.getElementById('detect');
+    const bars = [
+        document.getElementById('bar1'),
+        document.getElementById('bar2'),
+        document.getElementById('bar3'),
+        document.getElementById('bar4'),
+        document.getElementById('bar5')
+    ];
 
-    }, 150);
+    function changeBars(...percentages) {
+        for (let i = 0; i < percentages.length; i++) {
+            try {
+                const barLength = 5 + Math.floor(percentages[i] * 40);
+                bars[i].style.height = `${barLength}%`;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+
+    async function beginAudioInput() {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioElement = document.createElement('audio');
+        audioElement.srcObject = stream;
+        audioElement.play();
+    }
+
+    async function endAudioInput() {
+        stream.getTracks().forEach(track => track.stop());
+        audioElement.pause();
+        audioElement.srcObject = null;
+        stream = null;
+        audioElement = null;
+    }
+
+    let barGeneration;
+
+    detectBtn.addEventListener('mousedown', () => {
+        if (stream === null) {
+            beginAudioInput();
+            barGeneration = setInterval(() => {
+                changeBars(
+                    Math.random(), 
+                    Math.random(), 
+                    Math.random(), 
+                    Math.random(), 
+                    Math.random()
+                );
+
+            }, 150);
+        } else {
+            endAudioInput();
+            clearInterval(barGeneration);
+            changeBars(
+                0, 
+                0, 
+                0, 
+                0, 
+                0
+            );
+        }
+    });
 });
