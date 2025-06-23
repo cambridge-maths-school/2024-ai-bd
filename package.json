@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "dev": "bun run workspace-frontend.js"
+  },
+  "workspaces": [
+    "frontend/*"
+  ],
+  "dependencies": {
+    "vite": "^6.3.5"
+  }
+}
