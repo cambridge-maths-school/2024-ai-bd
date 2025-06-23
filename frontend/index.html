@@ -9,10 +9,28 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
 </head>
 <body>
-    <header></header>
-    <div>Teachable Machine Audio Model</div>
-    <button type="button" onclick="init()">Start</button>
-    <div id="label-container"></div>
+    <nav>
+        <ul>
+            <li>Home</li>
+            <li>About</li>
+            <li>History</li>
+        </ul>
+    </nav>
+    <main>
+        <button class="detect" id="detect">
+            <div class="detect-bar" id="bar1"></div>
+            <div class="detect-bar" id="bar2"></div>
+            <div class="detect-bar" id="bar3"></div>
+            <div class="detect-bar" id="bar4"></div>
+            <div class="detect-bar" id="bar5"></div>
+        </button>
+        <!--
+        <div>Teachable Machine Audio Model</div>
+        <button type="button" onclick="init()">Start</button>
+        <div id="label-container"></div>
+        -->
+    </main>
+    <script type="text/javascript" src="main.js"></script>
     <script type="text/javascript" src="detect_audio.js"></script>
 </body>
 </html>
