@@ -50,6 +50,9 @@ The program would be able to recognise songs using a prebuilt ai training progra
 Simplistic and minimalistic design
 ![Design](assets/Design.png)
 
+Greater detail analysis 
+![Design Plan](assets/Design2.png)
+
 ### Decomposition
 - Detect Audio
     - Ask for permission
