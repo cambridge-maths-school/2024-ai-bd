@@ -1,6 +1,7 @@
 # AI Project
 
 ## Planning
+
 ### Ideas
 - Facial Recognition
 - Detect danger
@@ -33,10 +34,22 @@ Shazam - owned by Apple - is the most popular solution to music recognition with
 
 ### Features
 - Primary Features
-    - Must be able to distinguish - with a high enough accuracy - the correct song
+    - Must be able to distinguish, with a high enough accuracy, the correct song
     - Must have at least 25 songs 
     - Should run locally
 - Extension Features
     - Can recognise patterns between songs to recommend new ones
     - Can extend its database by scraping youtube (will need to check tos and permission)
     - Could keep track of the amount of people who looked up the song
+
+## Design
+
+### Structure
+
+### User Interface
+
+### Decomposition
+
+### Algorithms
+
+### Test data
