@@ -43,12 +43,13 @@ Shazam - owned by Apple - is the most popular solution to music recognition with
     - Could keep track of the amount of people who looked up the song
 
 ## Design
-
-
-
 ### Structure
+The program would be able to recognise songs using a prebuilt ai training program [TeachableMachine](https://teachablemachine.withgoogle.com), but the model would be created by us. We would train it by feeding it a few songs at the start until it can confidently detect the difference between a few songs & background noise. Then, only at this point, we can get more songs into the dataset, and even support mp3 inputs for new songs added to the model.
 
 ### User Interface
+
+Simplistic and minimalistic design
+![Default Display Image](assets/Design.png)
 
 ### Decomposition
 
