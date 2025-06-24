@@ -76,6 +76,19 @@ Greater detail analysis
 
 ### Algorithms
 
+Inputs:
+- Audio Buffer
+
+Outputs:
+- Bar Height Array
+
+
+In calculating the bar height for the next frame, we don't reference to the previous frame at all, making each bar height independent of each other and therefore simplifying the inputs and inner workings.
+
+
+One of the inputs is the audio buffer, which is a mean value of amplitude of sound within a given time frame. This is the raw input that we use as the main variable to calculate the resulting bar height. In the function, we'd probably have a for loop to calculate the height of each bar and return it in the only output variable, bar height array. Each iteration of the for loop pushes a new value to 
+
+
 ### Test data
 | Function | Valid Inputs | Boundary Inputs | Erroneous Inputs |
 | -- | -- | -- | -- |
