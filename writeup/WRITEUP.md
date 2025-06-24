@@ -47,12 +47,33 @@ Shazam - owned by Apple - is the most popular solution to music recognition with
 The program would be able to recognise songs using a prebuilt ai training program [TeachableMachine](https://teachablemachine.withgoogle.com), but the model would be created by us. We would train it by feeding it a few songs at the start until it can confidently detect the difference between a few songs & background noise. Then, only at this point, we can get more songs into the dataset, and even support mp3 inputs for new songs added to the model.
 
 ### User Interface
-
 Simplistic and minimalistic design
-![Default Display Image](assets/Design.png)
+![Design](assets/Design.png)
 
 ### Decomposition
+- Detect Audio
+    - Ask for permission
+        - <sub>Automatically handled by client<sub>
+    - Get audio
+        - Get stream (Audio Buffer) from [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+
+- Change bar size
+    - Get audio sample (past timeframe e.g. 1 second)
+    - Split audio sample into frames
+        - Split into 5 (or however many bars are chosen) frames
+    - Calculate mean of frame
+        - Take height of each 1ms and find mean of all
+    - Return bar size (fixed to min and max bar size)
+
+- Detect song
+    - Get audio input
+    - Compare with model
+    - Record the percentage accuracy for 10 seconds
+    - Return the most likely song (highest mean percentage accuracy)
 
 ### Algorithms
 
 ### Test data
+| Function | Valid Inputs | Boundary Inputs | Erroneous Inputs |
+| -- | -- | -- | -- |
+| **ChangeBars()** | 0.1, 0.347, 0.98 | 0, 1 | 'hello', 9.6, ['a', 'b', 'c'] |
