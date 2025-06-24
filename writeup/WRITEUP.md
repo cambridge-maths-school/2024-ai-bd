@@ -44,6 +44,8 @@ Shazam - owned by Apple - is the most popular solution to music recognition with
 
 ## Design
 
+
+
 ### Structure
 
 ### User Interface
