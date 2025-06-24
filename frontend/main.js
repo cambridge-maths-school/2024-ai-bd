@@ -1,3 +1,5 @@
+import { init } from './detect_audio.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     let stream = null;
     let audioElement = null;
@@ -27,6 +29,27 @@ document.addEventListener('DOMContentLoaded', () => {
         audioElement = document.createElement('audio');
         audioElement.srcObject = stream;
         audioElement.play();
+
+        let scores = [];
+
+        document.addEventListener('ScoresUpdate', (e) => {
+            console.log(e.detail);
+            scores.push(e.detail.scores);
+        });
+
+        const timeout = 10_000;
+        init(timeout);
+        setTimeout(() => {
+            endAudioInput();
+            clearInterval(barGeneration);
+            changeBars(
+                0, 
+                0, 
+                0, 
+                0, 
+                0
+            );   
+        }, timeout);
     }
 
     async function endAudioInput() {
@@ -35,6 +58,21 @@ document.addEventListener('DOMContentLoaded', () => {
         audioElement.srcObject = null;
         stream = null;
         audioElement = null;
+    }
+
+    function toggleBarState() {
+        if (stream === null) {
+            beginAudioInput();
+            barGeneration = setInterval(() => {
+                changeBars(
+                    Math.random(), 
+                    Math.random(), 
+                    Math.random(), 
+                    Math.random(), 
+                    Math.random()
+                );
+            }, 150);
+        }
     }
 
     let barGeneration;
@@ -50,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     Math.random(), 
                     Math.random()
                 );
-
             }, 150);
         } else {
             endAudioInput();

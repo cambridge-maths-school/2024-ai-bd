@@ -22,13 +22,16 @@ async function createModel() {
     return recognizer;
 }
 
-async function init() {
+export async function init(timeout) {
     const recognizer = await createModel();
     const classLabels = recognizer.wordLabels(); // get class labels
+
+    /*
     const labelContainer = document.getElementById("label-container");
     for (let i = 0; i < classLabels.length; i++) {
         labelContainer.appendChild(document.createElement("div"));
     }
+    */
 
     // listen() takes two arguments:
     // 1. A callback function that is invoked anytime a word is recognized.
@@ -36,10 +39,21 @@ async function init() {
     recognizer.listen(result => {
         const scores = result.scores; // probability of prediction for each class
         // render the probability scores per class
+        const scoresEvent = new CustomEvent('ScoresUpdate', {
+            detail: { 
+                labels: classLabels,
+                scores: result.scores
+            }
+        });
+        document.dispatchEvent(scoresEvent);
+
+        /*
         for (let i = 0; i < classLabels.length; i++) {
             const classPrediction = classLabels[i] + ": " + result.scores[i].toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
         }
+        */
+
     }, {
         includeSpectrogram: true, // in case listen should return result.spectrogram
         probabilityThreshold: 0.75,
@@ -47,6 +61,6 @@ async function init() {
         overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
     });
 
-    // Stop the recognition in 5 seconds.
-    // setTimeout(() => recognizer.stopListening(), 5000);
+    // Stop the recognition in (timeout) seconds.
+    setTimeout(() => recognizer.stopListening(), timeout);
 }
