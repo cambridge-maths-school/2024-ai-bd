@@ -19,9 +19,9 @@ function calculateLikelySong() {
     }
 
     let meanValTuples = totalVals.map((val, i) => {
-        {
-            labels[i], 
-            val / valCount
+        return {
+            'title': labels[i], 
+            'score': val / valCount
         }
     });
     
