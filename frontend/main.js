@@ -6,12 +6,12 @@ function calculateLikelySong() {
     if (!scores.length > 0) return 'Too little data';
     
     let labels = scores[0].labels;
-    let totalVals = [];
+    let totalVals = new Array(labels.length).fill(0);
     let valCount = 0;
 
     for (let i = 0; i < scores.length; i++) {
         if (JSON.stringify(labels) !== JSON.stringify(scores[i].labels)) return 'Invalid lables';
-        let values = scores[i].labels;
+        let values = scores[i].scores;
         for (let j = 0; j < values.length; j++) {
             totalVals[j] += values[j];
         }
@@ -24,13 +24,28 @@ function calculateLikelySong() {
             'score': val / valCount
         }
     });
-    
-    return meanValTuples;
+
+    let winner = {
+        'title': '', 
+        'score': 0
+    };
+
+    meanValTuples.forEach((val) => {
+        if (val.score > winner.score) winner = val;
+    });
+
+    if (winner.score < 0.50) {
+        return {
+            'title': 'Background Noise',
+            'score': null
+        };
+    } else {
+        return winner;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     let stream = null;
-    let audioElement = null;
     let autoOff = false;
     let timeout = null;
     let barGeneration;
@@ -57,22 +72,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function beginAudioInput() {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioElement = document.createElement('audio');
-        audioElement.srcObject = stream;
-        audioElement.play();
 
         scores = [];
 
         document.addEventListener('ScoresUpdate', (e) => {
             console.log(e.detail);
-            scores.push(e.detail.scores);
+            scores.push(e.detail);
         });
 
         const timeoutTime = 10_000;
         init(timeoutTime);
         autoOff = true;
 
-        setTimeout(finaliseInput, timeoutTime);
+        timeout = setTimeout(finaliseInput, timeoutTime);
     }
 
     async function finaliseInput() {
@@ -88,19 +100,30 @@ document.addEventListener('DOMContentLoaded', () => {
             0, 
             0
         );
-        console.log();
+
+        const likelySong = calculateLikelySong();
+        if (typeof likelySong === 'string') {
+            document.getElementById('songTitle').innerText = likelySong;
+        } else {
+            if (likelySong.title == 'Background Noise') {
+                document.getElementById('songTitle').innerText = 'Cannot detect song';
+            } else {
+                document.getElementById('songTitle').innerText = `
+                    It is most likely: ${likelySong.title} 
+                    (${(likelySong.score * 100).toFixed(0)}%)
+                `;
+            }
+        }
     }
 
     async function endAudioInput() {
         stream.getTracks().forEach(track => track.stop());
-        audioElement.pause();
-        audioElement.srcObject = null;
         stream = null;
-        audioElement = null;
     }
 
     function toggleBarState() {
         if (stream === null) {
+            document.getElementById('songTitle').innerText = '';
             beginAudioInput();
             barGeneration = setInterval(() => {
                 changeBars(
@@ -112,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
             }, 150);
         } else {
-            //clearTimeout(timeout);
+            clearTimeout(timeout);
             finaliseInput();
         }
     }

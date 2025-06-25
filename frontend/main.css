@@ -62,3 +62,9 @@ main {
     border-radius: 20px;
     transition: height 0.33s ease;
 }
+
+h3 {
+    text-align: center;
+    color: var(--purple-light);
+    font-size: 45px;
+}

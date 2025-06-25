@@ -90,6 +90,6 @@ One of the inputs is the audio buffer, which is a mean value of amplitude of sou
 
 
 ### Test data
-| Function | Valid Inputs | Boundary Inputs | Erroneous Inputs |
+| Function Call | Input | Outputs | Data Type |
 | -- | -- | -- | -- |
 | **ChangeBars()** | 0.1, 0.347, 0.98 | 0, 1 | 'hello', 9.6, ['a', 'b', 'c'] |

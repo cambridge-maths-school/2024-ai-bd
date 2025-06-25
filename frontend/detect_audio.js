@@ -37,7 +37,6 @@ export async function init(timeout) {
     // 1. A callback function that is invoked anytime a word is recognized.
     // 2. A configuration object with adjustable fields
     recognizer.listen(result => {
-        const scores = result.scores; // probability of prediction for each class
         // render the probability scores per class
         const scoresEvent = new CustomEvent('ScoresUpdate', {
             detail: { 
