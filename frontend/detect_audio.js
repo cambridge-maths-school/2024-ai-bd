@@ -61,6 +61,8 @@ export async function init(timeout) {
         overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
     });
 
-    // Stop the recognition in (timeout) seconds.
-    setTimeout(() => recognizer.stopListening(), timeout);
+    document.addEventListener('ListeningHalt', () => {
+        recognizer.stopListening();
+        console.log('finished');
+    });
 }

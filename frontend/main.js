@@ -1,8 +1,39 @@
 import { init } from './detect_audio.js';
 
+let scores = [];
+
+function calculateLikelySong() {
+    if (!scores.length > 0) return 'Too little data';
+    
+    let labels = scores[0].labels;
+    let totalVals = [];
+    let valCount = 0;
+
+    for (let i = 0; i < scores.length; i++) {
+        if (JSON.stringify(labels) !== JSON.stringify(scores[i].labels)) return 'Invalid lables';
+        let values = scores[i].labels;
+        for (let j = 0; j < values.length; j++) {
+            totalVals[j] += values[j];
+        }
+        valCount++;
+    }
+
+    let meanValTuples = totalVals.map((val, i) => {
+        {
+            labels[i], 
+            val / valCount
+        }
+    });
+    
+    return meanValTuples;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     let stream = null;
     let audioElement = null;
+    let autoOff = false;
+    let timeout = null;
+    let barGeneration;
 
     const detectBtn = document.getElementById('detect');
     const bars = [
@@ -30,26 +61,34 @@ document.addEventListener('DOMContentLoaded', () => {
         audioElement.srcObject = stream;
         audioElement.play();
 
-        let scores = [];
+        scores = [];
 
         document.addEventListener('ScoresUpdate', (e) => {
             console.log(e.detail);
             scores.push(e.detail.scores);
         });
 
-        const timeout = 10_000;
-        init(timeout);
-        setTimeout(() => {
-            endAudioInput();
-            clearInterval(barGeneration);
-            changeBars(
-                0, 
-                0, 
-                0, 
-                0, 
-                0
-            );   
-        }, timeout);
+        const timeoutTime = 10_000;
+        init(timeoutTime);
+        autoOff = true;
+
+        setTimeout(finaliseInput, timeoutTime);
+    }
+
+    async function finaliseInput() {
+        const haltEvent = new CustomEvent('ListeningHalt');
+        document.dispatchEvent(haltEvent);
+        autoOff = true;
+        await endAudioInput();
+        clearInterval(barGeneration);
+        changeBars(
+            0, 
+            0, 
+            0, 
+            0, 
+            0
+        );
+        console.log();
     }
 
     async function endAudioInput() {
@@ -72,33 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     Math.random()
                 );
             }, 150);
+        } else {
+            //clearTimeout(timeout);
+            finaliseInput();
         }
     }
 
-    let barGeneration;
-
-    detectBtn.addEventListener('mousedown', () => {
-        if (stream === null) {
-            beginAudioInput();
-            barGeneration = setInterval(() => {
-                changeBars(
-                    Math.random(), 
-                    Math.random(), 
-                    Math.random(), 
-                    Math.random(), 
-                    Math.random()
-                );
-            }, 150);
-        } else {
-            endAudioInput();
-            clearInterval(barGeneration);
-            changeBars(
-                0, 
-                0, 
-                0, 
-                0, 
-                0
-            );
-        }
-    });
+    detectBtn.addEventListener('mousedown', toggleBarState);
 });
